@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.dao.StudentDao">
+    <select id="getById" parameterType="java.lang.String" resultType="com.bjpowernode.domain.Student">
+             select * from tbl_student where id = #{id}
+    </select>
+
+    <select id="getAll" resultType="com.bjpowernode.domain.Student">
+        select * from tbl_student
+    </select>
+
+    <insert id="save" parameterType="com.bjpowernode.domain.Student">
+        insert into tbl_student(id, name, age, address) values(#{id}, #{name},#{age},#{address})
+    </insert>
+
+    <update id="update" >
+        update tbl_student set age = #{age} where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from tbl_student where id = #{id}
+    </delete>
+
+    <select id="select7" resultType="Student">
+        select * from tbl_student where name like '%' #{name} '%'
+    </select>
+
+    <resultMap id="stuMap" type="map">
+        <id property="id" column="id"></id>
+        <result property="name" column="fullname"></result>
+        <result property="age" column="age"></result>
+        <result property="address" column="address"></result>
+    </resultMap>
+
+    <select id="select16" resultMap="stuMap">
+        select * from tbl_student
+    </select>
+
+    <select id="select23" resultMap="stuMap">
+        select * from tbl_student
+    </select>
+
+    <select id="select24" parameterType="map" resultType="Student">
+        select id,fullname as name,age,address from tbl_student
+        <where>
+        <if test="name != null and name != ''">
+            and id like '%' #{id} '%'
+        </if>
+
+        <if test="address != null and address != ''">
+            and address like '%' #{address} '%'
+        </if>
+        </where>
+    </select>
+
+    <sql id="sql1">
+        select id,fullname as name,age,address from tbl_student
+    </sql>
+
+    <select id="select25" resultType="Student">
+        <include refid="sql1"></include>
+        where
+
+        id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+    </select>
+
+    <select id="select26" resultType="Student">
+        <include refid="sql1"></include>
+        where
+        age in
+        <foreach collection="list" item="age" open="(" separator="," close=")">
+            #{age}
+        </foreach>
+    </select>
+
+    <select id="select27" resultType="map">
+        select
+
+        fullname,count(*)
+
+        from tbl_student
+
+        group by fullname
+    </select>
+
+    <select id="select28"  resultType="com.bjpowernode.vo.StudentAndClassVo2">
+        select
+            s.no sno,
+            s.name sname,
+            s.cno scno,
+            s.classname sclassname,
+            c.cno ccno,
+            c.classname cclassname
+        from t_student s
+        join t_class c
+        on s.cno=c.cno
+    </select>
+
+    <select id="select29"  resultType="com.bjpowernode.vo.StudentAndClassVo2">
+        select
+            s.no sno,
+            s.name sname,
+            s.cno scno,
+            s.classname sclassname,
+            c.cno ccno,
+            c.classname cclassname
+        from t_student s
+        join t_class c
+        on s.cno=c.cno
+        where s.name like '%' #{name} '%'
+    </select>
+</mapper>
